@@ -2,6 +2,7 @@ misc/
 target/
 *.bat
 *.http
+pom.xml.versionsBackup
 
 # Heroku local setup files
 .env
