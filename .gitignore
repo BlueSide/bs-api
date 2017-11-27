@@ -1,0 +1,8 @@
+misc/
+target/
+*.bat
+*.http
+
+# Heroku local setup files
+.env
+Procfile
