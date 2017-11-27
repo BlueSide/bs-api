@@ -1,4 +1,4 @@
-package nl.blueside.sp_api;
+package nl.blueside.api;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;

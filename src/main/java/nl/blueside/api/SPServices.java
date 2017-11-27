@@ -1,4 +1,4 @@
-package nl.blueside.sp_api;
+package nl.blueside.api;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

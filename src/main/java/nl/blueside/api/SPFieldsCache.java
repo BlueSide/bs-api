@@ -1,4 +1,4 @@
-package nl.blueside.sp_api;
+package nl.blueside.api;
 
 import java.util.Map;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package nl.blueside.sp_api;
+package nl.blueside.api;
 
 import java.io.FileInputStream;
 import java.io.IOException;

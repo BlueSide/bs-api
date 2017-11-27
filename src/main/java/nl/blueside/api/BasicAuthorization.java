@@ -1,4 +1,4 @@
-package nl.blueside.sp_api;
+package nl.blueside.api;
 
 import java.util.Base64;
 import java.nio.charset.Charset;
