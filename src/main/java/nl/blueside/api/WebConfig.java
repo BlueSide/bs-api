@@ -7,7 +7,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
-//@ComponentScan("nl.blueside.sp_api")
 @EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter
 {

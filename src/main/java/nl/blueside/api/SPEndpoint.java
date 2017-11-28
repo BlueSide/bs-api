@@ -1,5 +1,5 @@
 package nl.blueside.api;
-public abstract class BSEndpoint
+public abstract class SPEndpoint
 {
     protected SPContext spContext;    
 }

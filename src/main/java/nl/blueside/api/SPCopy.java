@@ -28,7 +28,7 @@ import nl.blueside.sp_api.Exceptions.MissingHeaderException;
 
 @RestController
 @RequestMapping("/sp/copy")
-public class SPCopy extends BSEndpoint
+public class SPCopy extends SPEndpoint
 {
 
     @RequestMapping(method = { RequestMethod.POST, RequestMethod.PUT })
