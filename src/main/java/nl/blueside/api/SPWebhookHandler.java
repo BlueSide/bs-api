@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 public class SPWebhookHandler
 {
 
-    @RequestMapping(method = { RequestMethod.POST }, params = {"validationToken"})
+    @RequestMapping(params = {"validationToken"})
     
     private ResponseEntity<String> validate(@RequestParam(value = "validationToken") String validateToken) throws URISyntaxException
     {
