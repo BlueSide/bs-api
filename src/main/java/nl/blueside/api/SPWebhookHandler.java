@@ -15,11 +15,11 @@ import org.springframework.http.HttpStatus;
 public class SPWebhookHandler
 {
 
-    @RequestMapping(params = {"validationToken"})
+    @RequestMapping(params = {"validationtoken"})
     
-    private ResponseEntity<String> validate(@RequestParam(value = "validationToken") String validateToken) throws URISyntaxException
+    private ResponseEntity<String> validate(@RequestParam(value = "validationtoken") String validationToken) throws URISyntaxException
     {
-        System.out.println(validateToken);
-        return new ResponseEntity<String>(validateToken, HttpStatus.OK);
+        System.out.println(validationToken);
+        return new ResponseEntity<String>(validationToken, HttpStatus.OK);
     }
 }
