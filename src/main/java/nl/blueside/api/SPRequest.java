@@ -14,7 +14,7 @@ import java.net.UnknownHostException;
 import java.io.IOException;
 
 import org.json.JSONObject;
-import nl.blueside.sp_api.Exceptions.SharePointException;
+import nl.blueside.api.Exceptions.SharePointException;
 import org.json.JSONException;
 import org.apache.http.StatusLine;
 import org.springframework.http.HttpStatus;

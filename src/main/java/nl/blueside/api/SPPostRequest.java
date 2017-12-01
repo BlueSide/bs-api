@@ -9,7 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.json.JSONObject;
-import nl.blueside.sp_api.Exceptions.SharePointException;
+import nl.blueside.api.Exceptions.SharePointException;
 
 public class SPPostRequest extends SPRequest
 {

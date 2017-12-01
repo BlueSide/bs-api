@@ -1,6 +1,6 @@
-package nl.blueside.sp_api.Exceptions;
+package nl.blueside.api.Exceptions;
 
-import nl.blueside.sp_api.SlackMessage;
+import nl.blueside.api.SlackMessage;
 
 public class MissingHeaderException extends Exception
 {

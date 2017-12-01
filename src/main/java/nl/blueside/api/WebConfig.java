@@ -1,4 +1,4 @@
-package nl.blueside.sp_api;
+package nl.blueside.api;
 
 //import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

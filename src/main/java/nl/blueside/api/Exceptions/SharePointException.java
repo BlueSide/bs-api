@@ -1,7 +1,7 @@
-package nl.blueside.sp_api.Exceptions;
+package nl.blueside.api.Exceptions;
 
-import nl.blueside.sp_api.Settings;
-import nl.blueside.sp_api.SlackMessage;
+import nl.blueside.api.Settings;
+import nl.blueside.api.SlackMessage;
 
 public class SharePointException extends Exception
 {

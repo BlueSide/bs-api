@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-import nl.blueside.sp_api.SimpleProfiler.SimpleProfiler;
-import nl.blueside.sp_api.Exceptions.MissingHeaderException;
+import nl.blueside.api.SimpleProfiler.SimpleProfiler;
+import nl.blueside.api.Exceptions.MissingHeaderException;
 
 @RestController
 @RequestMapping("/sp/copy")

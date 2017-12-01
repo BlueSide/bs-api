@@ -1,4 +1,4 @@
-package nl.blueside.sp_api.SimpleProfiler;
+package nl.blueside.api.SimpleProfiler;
 
 import java.util.concurrent.TimeUnit;
 

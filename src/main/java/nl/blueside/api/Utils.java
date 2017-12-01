@@ -1,12 +1,12 @@
-package nl.blueside.sp_api;
+package nl.blueside.api;
 
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
-import nl.blueside.sp_api.Exceptions.MissingHeaderException;
 import java.util.HashMap;
 import java.util.Enumeration;
 import java.util.Iterator;
 
+import nl.blueside.api.Exceptions.MissingHeaderException;
 
 public class Utils
 {
