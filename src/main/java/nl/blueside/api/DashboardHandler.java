@@ -34,5 +34,6 @@ public class DashboardHandler extends TextWebSocketHandler {
     {
         System.out.println("Dashboard with id " + session.getId() + " disconnected:");
         System.out.println(status.toString());
+        DashboardSessions.removeSession(session);
     }
 }

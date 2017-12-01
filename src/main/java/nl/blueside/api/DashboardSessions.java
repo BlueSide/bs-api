@@ -15,6 +15,11 @@ public class DashboardSessions
         sessions.add(wss);
     }
 
+    public static void removeSession(WebSocketSession wss)
+    {
+        sessions.remove(wss);
+    }
+
     public static List<WebSocketSession> getSessions()
     {
         return sessions;
