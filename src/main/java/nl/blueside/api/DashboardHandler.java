@@ -11,13 +11,13 @@ import java.io.IOException;
  * - Write a HttpSessionHandshakeInterceptor to authenticate before upgrading to a WebSocket connection
  */
 
-public class DashboardHandler extends TextWebSocketHandler {
+public class DashboardHandler extends TextWebSocketHandler
+{
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session)
     {
         System.out.println("A new dashboard has connected with id: " + session.getId());
-        System.out.println("Remote Address: " + session.getRemoteAddress());
         DashboardSessions.addSession(session);
     }
         
