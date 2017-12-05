@@ -67,8 +67,6 @@ public class SPContext
 
     public static SPContext registerCredentials(SPCredentials credentials) throws AuthenticationException, Exception
     {
-        //STUDY: When do we need to refresh the Digest?
-        //TODO: Check expiration and responsd accordingly!!
         SPContext context;
         //SPCredentials credentialsToRegister = new SPCredentials(url, username, password);
         Iterator<SPContext> contextIterator = contexts.iterator();

@@ -16,6 +16,8 @@ public class Settings
     public static String applicationId;
     public static String tenantId;
 
+    public static String webhookEndpoint;
+    
     public static String urlTitle;
     public static String uriField;
 
@@ -50,6 +52,8 @@ public class Settings
         Settings.debug = Boolean.parseBoolean(prop.getProperty("debugMode"));
         Settings.slackMessagesEnabled = Boolean.parseBoolean(prop.getProperty("slackMessagesEnabled"));
         
+        Settings.webhookEndpoint = getSetting("webhookEndpoint");
+
         Settings.urlTitle = getSetting("urlTitle");
         Settings.applicationId = getSetting("applicationId");
         Settings.tenantId = getSetting("tenantId");

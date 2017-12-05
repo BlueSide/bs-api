@@ -112,7 +112,7 @@ public class Dashboard
 
         JSONObject payload = new JSONObject();
         payload.put("resource", resource);
-        payload.put("notificationUrl", "https://91f7cd04.ngrok.io/d/webhook");
+        payload.put("notificationUrl", Settings.webhookEndpoint);
         payload.put("expirationDateTime", then.toString());
         //payload.put("clientState", ds.getId());
 

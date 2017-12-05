@@ -50,6 +50,7 @@ public class SPRequest
             }
         }
 
+        // Refresh access token if needed
         this.context.refreshToken();
 
         // Add mandatory headers
