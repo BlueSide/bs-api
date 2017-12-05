@@ -43,14 +43,20 @@ public class SPGetRequest extends SPRequest
         }
         catch(SharePointException spe)
         {
-            if(Settings.debug) System.out.println(spe.getMessage());
+            System.out.println(spe.getMessage());
             spe.printStackTrace();
             return null;
         }
         catch(IOException ie)
         {
-            if(Settings.debug) System.out.println(ie.getMessage());
+            System.out.println(ie.getMessage());
             ie.printStackTrace();
+            return null;
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
             return null;
         }
 

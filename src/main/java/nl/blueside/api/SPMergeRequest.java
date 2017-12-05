@@ -80,6 +80,12 @@ public class SPMergeRequest extends SPRequest
             ie.printStackTrace();
             return null;
         }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
 
         return resultObject;
     }

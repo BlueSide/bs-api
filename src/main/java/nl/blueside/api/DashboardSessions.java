@@ -4,34 +4,33 @@ import java.util.List;
 import java.util.ArrayList;
 import org.springframework.web.socket.WebSocketSession;
 
-
-
 public class DashboardSessions
 {
-    private static List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
+    private static List<DashboardSession> sessions = new ArrayList<DashboardSession>();
 
-    public static void addSession(WebSocketSession wss)
+    public static void addSession(DashboardSession ds)
     {
-        sessions.add(wss);
+        sessions.add(ds);
     }
 
-    public static void removeSession(WebSocketSession wss)
+    public static void removeSession(String sessionId)
     {
-        sessions.remove(wss);
+        
+        sessions.remove(getSessionById(sessionId));
     }
 
-    public static List<WebSocketSession> getSessions()
+    public static List<DashboardSession> getSessions()
     {
         return sessions;
     }
 
-    public static WebSocketSession getSessionById(String id)
+    public static DashboardSession getSessionById(String id)
     {
-        for(WebSocketSession wss : sessions)
+        for(DashboardSession ds : sessions)
         {
-            if(wss.getId().equals(id))
+            if(ds.getId().equals(id))
             {
-                return wss;
+                return ds;
             }
         }
 

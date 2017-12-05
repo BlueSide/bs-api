@@ -32,6 +32,7 @@ import javax.naming.ServiceUnavailableException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.Date;
 
 public class SPContext
 {
@@ -48,6 +49,17 @@ public class SPContext
         this.authentication = getAccessTokenFromUserCredentials(credentials);
     }
 
+    public void refreshToken() throws Exception
+    {
+        //Check for a valid context, renew if necessary
+        Date now = new Date();
+        if(now.after(this.authentication.getExpiresOnDate()))
+        {
+            this.authentication = getAccessTokenFromUserCredentials(credentials);
+            SlackMessage sm = new SlackMessage("Refreshed JWT for " + credentials.username);
+        }
+    }
+    
     public static SPContext registerCredentials(String url, String site, String applicationId, String username, String password) throws AuthenticationException, Exception
     {
         return registerCredentials(new SPCredentials(url, site, applicationId, username, password));
@@ -55,8 +67,8 @@ public class SPContext
 
     public static SPContext registerCredentials(SPCredentials credentials) throws AuthenticationException, Exception
     {
-        //STUDY: Are the cookies infinite?
         //STUDY: When do we need to refresh the Digest?
+        //TODO: Check expiration and responsd accordingly!!
         SPContext context;
         //SPCredentials credentialsToRegister = new SPCredentials(url, username, password);
         Iterator<SPContext> contextIterator = contexts.iterator();
@@ -74,7 +86,7 @@ public class SPContext
         contexts.add(context);
         return context;
     }
-
+        
     private static AuthenticationResult getAccessTokenFromUserCredentials(SPCredentials credentials) throws AuthenticationException, Exception
     {
         AuthenticationContext context = null;

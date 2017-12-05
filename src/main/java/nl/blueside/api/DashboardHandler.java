@@ -11,6 +11,7 @@ import com.microsoft.aad.adal4j.AuthenticationException;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URISyntaxException;
 import org.json.JSONObject;
+import org.json.JSONException;
 
 /* TODO:
  * - Write a HttpSessionHandshakeInterceptor to authenticate before upgrading to a WebSocket connection
@@ -23,31 +24,48 @@ public class DashboardHandler extends TextWebSocketHandler
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws AuthenticationException, Exception, URISyntaxException
     {
-        System.out.println("A new dashboard has connected with id: " + session.getId());
-        DashboardSessions.addSession(session);
-
+        //TODO: Get this info from the client
         this.context = SPContext.registerCredentials("https://bluesidenl.sharepoint.com",
                                                      "https://bluesidenl.sharepoint.com/sites/dev/dashboard",
                                                      Settings.applicationId,
                                                      "admin@bluesidenl.onmicrosoft.com", "Zj5B66YDwrmjj3hw");
 
+        DashboardSession ds = new DashboardSession(session, context);
+        DashboardSessions.addSession(ds);
+
+        JSONObject returnObject = new JSONObject();
+        returnObject.put("type", "session_created");
+        returnObject.put("id", ds.getId());
+
+        ds.send(returnObject.toString());
     }
         
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException, URISyntaxException
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException
     {
-        System.out.println(message.getPayload());
+        
+        try
+        {
+            JSONObject payload = new JSONObject(message.getPayload());
 
-        JSONObject payload = new JSONObject();
-        payload.put("resource", "https://bluesidenl.sharepoint.com/sites/dev/dashboard");
-        payload.put("notificationUrl", "https://blueside-sp-api.herokuapp.com/spwh");
-        payload.put("expirationDateTime", "2018-04-27T16:17:57+00:00");
+            switch(payload.getString("type"))
+            {
+                case "subscription":
+                    DashboardSession ds = DashboardSessions.getSessionById(session.getId());
 
-        SPPostRequest postRequest = new SPPostRequest(context, message.getPayload(), payload.toString(), null);
-        JSONObject responseObj = postRequest.execute();
-        System.out.println(responseObj.toString());
-        //String msg = "Hello from API!";
-        //session.sendMessage(new TextMessage(msg.getBytes()));
+                    //TODO: Handle this dynamically, one Dashboard probably has multiple queries and resources
+                    ds.query = payload.getString("query");
+                    Dashboard.subscribe(ds, payload.getString("resource"));
+                    break;
+            }
+        }
+        catch(JSONException je)
+        {
+            JSONObject error = new JSONObject();
+            error.put("type", "error");
+            error.put("message", je.getMessage());
+            session.sendMessage(new TextMessage(error.toString().getBytes()));            
+        }
     }
 
     @Override
@@ -55,6 +73,6 @@ public class DashboardHandler extends TextWebSocketHandler
     {
         System.out.println("Dashboard with id " + session.getId() + " disconnected:");
         System.out.println(status.toString());
-        DashboardSessions.removeSession(session);
+        DashboardSessions.removeSession(session.getId());
     }
 }

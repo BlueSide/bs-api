@@ -16,21 +16,43 @@ public class SPDeleteRequest extends SPRequest
 {
     private HttpDelete httpDelete;
 
-    public SPDeleteRequest(SPContext context, String endpoint, HashMap<String, String> headers) throws IOException, URISyntaxException
+    public SPDeleteRequest(SPContext context, String endpoint, HashMap<String, String> headers) throws URISyntaxException
     {
         super(context, headers);
 
         URI url = new URI(endpoint);
 
         HttpDelete httpDelete = new HttpDelete(url);
-
-        //STUDY: Can we make use of this?
-        httpDelete.setHeader("IF-MATCH", "*");
     }
 
-    public JSONObject execute() throws IOException, SharePointException
+    public JSONObject execute()
     {
-        return this.executeRequest(this.httpDelete);
+        JSONObject resultObject = null;
+
+        try
+        {
+            resultObject = this.executeRequest(this.httpDelete);
+        }
+        catch(SharePointException spe)
+        {
+            if(Settings.debug) System.out.println(spe.getMessage());
+            spe.printStackTrace();
+            return null;
+        }
+        catch(IOException ie)
+        {
+            System.out.println(ie.getMessage());
+            ie.printStackTrace();
+            return null;
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+
+        return resultObject;
     }
 
 }

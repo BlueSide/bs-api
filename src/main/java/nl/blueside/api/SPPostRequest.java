@@ -72,7 +72,12 @@ public class SPPostRequest extends SPRequest
             ie.printStackTrace();
             return null;
         }
-        System.out.println(resultObject);
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
         return (JSONObject)resultObject.get("d");
     }
 

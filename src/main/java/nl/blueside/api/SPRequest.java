@@ -7,20 +7,21 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpHeaders;
 
-import java.util.Map;
-import java.net.UnknownHostException;
 import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.Map;
+
+import org.apache.http.StatusLine;
 
 import org.json.JSONObject;
-import nl.blueside.api.Exceptions.SharePointException;
 import org.json.JSONException;
-import org.apache.http.StatusLine;
-import org.springframework.http.HttpStatus;
+
+import nl.blueside.api.Exceptions.SharePointException;
 
 //TODO: Handle all errors by checking the Status Code!
-
 public class SPRequest
 {
     SPContext context;
@@ -36,8 +37,10 @@ public class SPRequest
         this.headers = headers;
     }
 
-    protected JSONObject executeRequest(HttpUriRequest request) throws IOException, UnknownHostException, SharePointException
+    protected JSONObject executeRequest(HttpUriRequest request) throws IOException, UnknownHostException, SharePointException, Exception
     {
+
+        
         // Add optional headers        
         if(headers != null)
         {
@@ -46,7 +49,9 @@ public class SPRequest
                 request.setHeader(entry.getKey(), entry.getValue());
             }
         }
-        
+
+        this.context.refreshToken();
+
         // Add mandatory headers
         request.setHeader(HttpHeaders.ACCEPT, "application/json;odata=verbose");
         request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
@@ -57,22 +62,24 @@ public class SPRequest
 
         try
         {
-                CloseableHttpResponse response = httpclient.execute(request);
-                StatusLine statusLine = response.getStatusLine();
+
+            //Execute the request
+            CloseableHttpResponse response = httpclient.execute(request);
+            StatusLine statusLine = response.getStatusLine();
                 
-                HttpEntity httpEntity = response.getEntity();
+            HttpEntity httpEntity = response.getEntity();
 
                 
-                if(httpEntity != null)
+            if(httpEntity != null)
+            {
+                result = EntityUtils.toString(response.getEntity());
+
+                if(statusLine.getStatusCode() != 200
+                   && statusLine.getStatusCode() != 201)
                 {
-                    result = EntityUtils.toString(response.getEntity());
-
-                    if(statusLine.getStatusCode() != 200
-                       && statusLine.getStatusCode() != 201)
-                    {
-                        throw new SharePointException(statusLine + ": " + result);
-                    }    
-                }
+                    throw new SharePointException(statusLine + ": " + result);
+                }    
+            }
                 
                 response.close();
         }
