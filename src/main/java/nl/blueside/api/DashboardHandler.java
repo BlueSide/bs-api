@@ -43,7 +43,6 @@ public class DashboardHandler extends TextWebSocketHandler
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException
     {
-        
         try
         {
             JSONObject payload = new JSONObject(message.getPayload());

@@ -61,6 +61,7 @@ public class Dashboard
         {
 
             JSONObject change = value.getJSONObject(i);
+            System.out.println(change.toString());
             String subscriptionId = change.getString("subscriptionId");
             
             for(DashboardSession ds : DashboardSessions.getSessions())
@@ -90,12 +91,14 @@ public class Dashboard
 
     public static void subscribe(DashboardSession ds, String resource) throws IOException
     {
-        // Send the client the initial data firts
-        // TODO: Move this to a better place
+        // NOTE: Send the client the initial data firts
+        // TODO: Move this to a better place. In the future, we want to return this request as early as possible, because the time of the
+        //       first load of a chart (for example) depends on this
         try
         {   
             SPGetRequest gr = new SPGetRequest(ds.getContext(), ds.query);
             JSONObject responseObj = gr.execute();
+            responseObj.put("resource", resource);
             DBMessage msg = new DBMessage(responseObj.toString(), DBMessageType.UPDATE);
             ds.send(msg.toString());
         }
@@ -104,7 +107,7 @@ public class Dashboard
             System.err.println(use.getMessage());
             use.printStackTrace();
         }
-
+        
         //TODO: Figure out when we need to do a new subscription
         //TODO: Figure out when what we can do on an exisiting subscription
         LocalDateTime now = LocalDateTime.now();
@@ -116,18 +119,20 @@ public class Dashboard
         payload.put("expirationDateTime", then.toString());
         //payload.put("clientState", ds.getId());
 
+        String subscriptionId = null;
         //TODO: We probably shouldn't create a new Webhook for each Dashboard session
         try
         {   
             SPPostRequest pr = new SPPostRequest(ds.getContext(), resource + "/subscriptions", payload.toString());
             JSONObject responseObj = pr.execute();
-            ds.addSubscription(resource, responseObj.getString("id"));
+            ds.addSubscription(resource, subscriptionId);
         }
         catch(URISyntaxException use)
         {
             System.err.println(use.getMessage());
             use.printStackTrace();
         }
+
 
     }
 }
