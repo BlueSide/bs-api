@@ -10,6 +10,7 @@ public class DashboardSession
 {
 
     public String query;
+    public String resource;
     
     private WebSocketSession wsSession;
     private SPContext context;

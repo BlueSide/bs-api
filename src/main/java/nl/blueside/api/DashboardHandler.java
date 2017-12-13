@@ -53,8 +53,9 @@ public class DashboardHandler extends TextWebSocketHandler
                     DashboardSession ds = DashboardSessions.getSessionById(session.getId());
 
                     //TODO: Handle this dynamically, one Dashboard probably has multiple queries and resources
+                    ds.resource = payload.getString("resource");
                     ds.query = payload.getString("query");
-                    Dashboard.subscribe(ds, payload.getString("resource"));
+                    Dashboard.subscribe(ds);
                     break;
             }
         }

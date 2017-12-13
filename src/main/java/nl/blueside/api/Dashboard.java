@@ -89,7 +89,7 @@ public class Dashboard
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 
-    public static void subscribe(DashboardSession ds, String resource) throws IOException
+    public static void subscribe(DashboardSession ds) throws IOException
     {
         // NOTE: Send the client the initial data firts
         // TODO: Move this to a better place. In the future, we want to return this request as early as possible, because the time of the
@@ -98,7 +98,8 @@ public class Dashboard
         {   
             SPGetRequest gr = new SPGetRequest(ds.getContext(), ds.query);
             JSONObject responseObj = gr.execute();
-            responseObj.put("resource", resource);
+            responseObj.put("resource", ds.resource);
+            responseObj.put("query", ds.query);
             DBMessage msg = new DBMessage(responseObj.toString(), DBMessageType.UPDATE);
             ds.send(msg.toString());
         }
@@ -114,7 +115,7 @@ public class Dashboard
         LocalDateTime then = now.plusDays(VALID_SUBSCRIBTION_TIME);
 
         JSONObject payload = new JSONObject();
-        payload.put("resource", resource);
+        payload.put("resource", ds.resource);
         payload.put("notificationUrl", Settings.webhookEndpoint);
         payload.put("expirationDateTime", then.toString());
         //payload.put("clientState", ds.getId());
@@ -123,9 +124,9 @@ public class Dashboard
         //TODO: We probably shouldn't create a new Webhook for each Dashboard session
         try
         {   
-            SPPostRequest pr = new SPPostRequest(ds.getContext(), resource + "/subscriptions", payload.toString());
+            SPPostRequest pr = new SPPostRequest(ds.getContext(), ds.resource + "/subscriptions", payload.toString());
             JSONObject responseObj = pr.execute();
-            ds.addSubscription(resource, subscriptionId);
+            ds.addSubscription(ds.resource, subscriptionId);
         }
         catch(URISyntaxException use)
         {
