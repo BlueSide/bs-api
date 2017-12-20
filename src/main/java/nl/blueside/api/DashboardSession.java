@@ -5,22 +5,27 @@ import org.springframework.web.socket.TextMessage;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
+import org.json.JSONObject;
+import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 
-public class DashboardSession 
+public class DashboardSession
 {
 
+    private static final int VALID_SUBSCRIBTION_TIME = 150; // in days
+
+    private Thread thread;
+    
     public String query;
     public String resource;
     
     private WebSocketSession wsSession;
-    private SPContext context;
     private Map<String, String> subscriptions;
     
-    public DashboardSession(WebSocketSession session, SPContext context)
+    public DashboardSession(WebSocketSession session)
     {
         this.subscriptions = new HashMap<String, String>();
         this.wsSession = session;
-        this.context = context;
     }
 
     public void send(String message) throws IOException
@@ -28,23 +33,14 @@ public class DashboardSession
         wsSession.sendMessage(new TextMessage(message.getBytes()));
     }
 
-    public String getId()
+    public String getSessionId()
     {
         return this.wsSession.getId();
     }
 
-    public SPContext getContext()
+    public void addDataSource(SPContext context, String resource, String query)
     {
-        return this.context;
+        new DataSource(context, resource, query);
     }
 
-    public void addSubscription(String resource, String id)
-    {
-        this.subscriptions.put(id, resource);
-    }
-
-    public String getSubscription(String id)
-    {
-        return this.subscriptions.get(id);
-    }
 }

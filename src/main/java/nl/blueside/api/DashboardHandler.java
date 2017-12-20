@@ -30,12 +30,12 @@ public class DashboardHandler extends TextWebSocketHandler
                                                      Settings.applicationId,
                                                      "admin@bluesidenl.onmicrosoft.com", "Zj5B66YDwrmjj3hw");
 
-        DashboardSession ds = new DashboardSession(session, context);
+        DashboardSession ds = new DashboardSession(session);
         DashboardSessions.addSession(ds);
 
         JSONObject returnObject = new JSONObject();
         returnObject.put("type", "session_created");
-        returnObject.put("id", ds.getId());
+        returnObject.put("id", ds.getSessionId());
 
         ds.send(returnObject.toString());
     }
@@ -46,16 +46,26 @@ public class DashboardHandler extends TextWebSocketHandler
         try
         {
             JSONObject payload = new JSONObject(message.getPayload());
+            System.out.println(payload.toString());
 
+            //TODO: This block takes a long time, resulting in large intervals in Websocket responses
             switch(payload.getString("type"))
             {
                 case "subscription":
-                    DashboardSession ds = DashboardSessions.getSessionById(session.getId());
+                    String query = payload.getString("query");
+                    String resource = payload.getString("resource");
 
-                    //TODO: Handle this dynamically, one Dashboard probably has multiple queries and resources
-                    ds.resource = payload.getString("resource");
-                    ds.query = payload.getString("query");
-                    Dashboard.subscribe(ds);
+                    DashboardSession dashboardSession = DashboardSessions.getSessionById(session.getId());
+
+                    // Check if datasource already exists
+                    DataSource dataSource = DataSources.getDataSourceByQuery(query);
+
+                    if(dataSource == null)
+                    {
+                        dataSource = new DataSource(context, resource, query);
+                    }
+
+                    dataSource.addSession(dashboardSession);
                     break;
             }
         }

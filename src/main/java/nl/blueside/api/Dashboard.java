@@ -21,9 +21,6 @@ import org.json.JSONArray;
 public class Dashboard
 {
 
-    private static final int VALID_SUBSCRIBTION_TIME = 150; // in days
-
-    
     @RequestMapping("/d/broadcast")
     private ResponseEntity<String> broadcast(
         @RequestBody JSONObject payload,
@@ -64,8 +61,9 @@ public class Dashboard
             System.out.println(change.toString());
             String subscriptionId = change.getString("subscriptionId");
             
-            for(DashboardSession ds : DashboardSessions.getSessions())
+            for(DataSource ds : DataSources.getDataSources())
             {
+                /*
                 String resource = ds.getSubscription(subscriptionId);
                 if(resource != null)
                 {
@@ -83,57 +81,10 @@ public class Dashboard
                     }
                     
                 }
+                */
             }            
         }
         
         return new ResponseEntity<String>(HttpStatus.OK);
-    }
-
-    public static void subscribe(DashboardSession ds) throws IOException
-    {
-        // NOTE: Send the client the initial data firts
-        // TODO: Move this to a better place. In the future, we want to return this request as early as possible, because the time of the
-        //       first load of a chart (for example) depends on this
-        try
-        {   
-            SPGetRequest gr = new SPGetRequest(ds.getContext(), ds.query);
-            JSONObject responseObj = gr.execute();
-            responseObj.put("resource", ds.resource);
-            responseObj.put("query", ds.query);
-            DBMessage msg = new DBMessage(responseObj.toString(), DBMessageType.UPDATE);
-            ds.send(msg.toString());
-        }
-        catch(URISyntaxException use)
-        {
-            System.err.println(use.getMessage());
-            use.printStackTrace();
-        }
-        
-        //TODO: Figure out when we need to do a new subscription
-        //TODO: Figure out when what we can do on an exisiting subscription
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime then = now.plusDays(VALID_SUBSCRIBTION_TIME);
-
-        JSONObject payload = new JSONObject();
-        payload.put("resource", ds.resource);
-        payload.put("notificationUrl", Settings.webhookEndpoint);
-        payload.put("expirationDateTime", then.toString());
-        //payload.put("clientState", ds.getId());
-
-        String subscriptionId = null;
-        //TODO: We probably shouldn't create a new Webhook for each Dashboard session
-        try
-        {   
-            SPPostRequest pr = new SPPostRequest(ds.getContext(), ds.resource + "/subscriptions", payload.toString());
-            JSONObject responseObj = pr.execute();
-            ds.addSubscription(ds.resource, subscriptionId);
-        }
-        catch(URISyntaxException use)
-        {
-            System.err.println(use.getMessage());
-            use.printStackTrace();
-        }
-
-
     }
 }

@@ -28,7 +28,7 @@ public class DashboardSessions
     {
         for(DashboardSession ds : sessions)
         {
-            if(ds.getId().equals(id))
+            if(ds.getSessionId().equals(id))
             {
                 return ds;
             }
