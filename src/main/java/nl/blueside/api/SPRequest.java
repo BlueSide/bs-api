@@ -19,28 +19,41 @@ import org.apache.http.StatusLine;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-import nl.blueside.api.Exceptions.SharePointException;
+import nl.blueside.api.Exceptions.BSException;
 
 //TODO: Handle all errors by checking the Status Code!
-public class SPRequest
+public class SPRequest extends HTTPRequest
 {
-    SPContext context;
-    Map<String, String> headers;
+    protected SPContext context;
 
     public SPRequest(SPContext context)
     {
+        super();
         this.context = context;
+        init();
     }
+
     public SPRequest(SPContext context, Map<String, String> headers)
     {
+        super(headers);
         this.context = context;
-        this.headers = headers;
+        init();
     }
 
-    protected JSONObject executeRequest(HttpUriRequest request) throws IOException, UnknownHostException, SharePointException, Exception
+    private void init()
     {
-
+        // Refresh access token if needed
+        this.context.refreshToken();
         
+        // Add mandatory headers
+        headers.put(HttpHeaders.ACCEPT, "application/json;odata=verbose");
+        headers.put(HttpHeaders.CONTENT_TYPE, "application/json");
+        headers.put(HttpHeaders.AUTHORIZATION, "Bearer " + context.authentication.getAccessToken());
+    }
+    
+    @Override
+    protected JSONObject executeRequest(HttpUriRequest request) throws IOException, UnknownHostException, BSException
+    {
         // Add optional headers        
         if(headers != null)
         {
@@ -49,14 +62,6 @@ public class SPRequest
                 request.setHeader(entry.getKey(), entry.getValue());
             }
         }
-
-        // Refresh access token if needed
-        this.context.refreshToken();
-
-        // Add mandatory headers
-        request.setHeader(HttpHeaders.ACCEPT, "application/json;odata=verbose");
-        request.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-        request.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + context.authentication.getAccessToken());
 
         String result = null;
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -75,14 +80,13 @@ public class SPRequest
             {
                 result = EntityUtils.toString(response.getEntity());
 
-                if(statusLine.getStatusCode() != 200
-                   && statusLine.getStatusCode() != 201)
+                if(statusLine.getStatusCode() > 299)
                 {
-                    throw new SharePointException(statusLine + ": " + result);
+                    throw new BSException(statusLine + ": " + result);
                 }    
             }
                 
-                response.close();
+            response.close();
         }
         finally
         {
@@ -107,13 +111,13 @@ public class SPRequest
                 {
                     JSONObject error = (JSONObject)responseObject.get("error");
                     JSONObject message = (JSONObject)error.get("message");
-                    throw new SharePointException(message.get("value").toString());
+                    throw new BSException(message.get("value").toString());
                 }
             }
             catch(JSONException je)
             {
                 //TODO: This is of course not really a SharePoint exception
-                throw new SharePointException(je.getMessage());
+                throw new BSException(je.getMessage());
             }
         }
         

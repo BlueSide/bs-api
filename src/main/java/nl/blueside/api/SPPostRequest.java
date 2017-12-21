@@ -9,7 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.json.JSONObject;
-import nl.blueside.api.Exceptions.SharePointException;
+import nl.blueside.api.Exceptions.BSException;
 
 public class SPPostRequest extends SPRequest
 {
@@ -60,21 +60,9 @@ public class SPPostRequest extends SPRequest
         {
             resultObject = this.executeRequest(this.httpPost);
         }
-        catch(SharePointException spe)
+        catch(IOException | BSException e)
         {
-            if(Settings.debug) System.out.println(spe.getMessage());
-            spe.printStackTrace();
-            return null;
-        }
-        catch(IOException ie)
-        {
-            System.out.println(ie.getMessage());
-            ie.printStackTrace();
-            return null;
-        }
-        catch(Exception e)
-        {
-            System.out.println(e.getMessage());
+            if(Settings.debug) System.out.println(e.getMessage());
             e.printStackTrace();
             return null;
         }

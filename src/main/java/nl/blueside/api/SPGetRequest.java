@@ -11,7 +11,7 @@ import java.net.URISyntaxException;
 
 import org.json.JSONObject;
 
-import nl.blueside.api.Exceptions.SharePointException;
+import nl.blueside.api.Exceptions.BSException;
 
 public class SPGetRequest extends SPRequest
 {
@@ -41,25 +41,13 @@ public class SPGetRequest extends SPRequest
         {
             resultObject = this.executeRequest(this.httpGet);
         }
-        catch(SharePointException spe)
-        {
-            System.out.println(spe.getMessage());
-            spe.printStackTrace();
-            return null;
-        }
-        catch(IOException ie)
-        {
-            System.out.println(ie.getMessage());
-            ie.printStackTrace();
-            return null;
-        }
-        catch(Exception e)
+        catch(IOException | BSException e)
         {
             System.out.println(e.getMessage());
             e.printStackTrace();
             return null;
         }
-
+        
         return (JSONObject)resultObject.get("d");
     }
 

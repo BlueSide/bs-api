@@ -38,9 +38,4 @@ public class DashboardSession
         return this.wsSession.getId();
     }
 
-    public void addDataSource(SPContext context, String resource, String query)
-    {
-        new DataSource(context, resource, query);
-    }
-
 }

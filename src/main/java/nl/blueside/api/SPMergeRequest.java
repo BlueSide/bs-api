@@ -9,7 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.json.JSONObject;
-import nl.blueside.api.Exceptions.SharePointException;
+import nl.blueside.api.Exceptions.BSException;
 
 public class SPMergeRequest extends SPRequest
 {
@@ -68,10 +68,10 @@ public class SPMergeRequest extends SPRequest
         {
             resultObject = this.executeRequest(this.httpPost);
         }
-        catch(SharePointException spe)
+        catch(BSException bse)
         {
-            if(Settings.debug) System.out.println(spe.getMessage());
-            spe.printStackTrace();
+            if(Settings.debug) System.out.println(bse.getMessage());
+            bse.printStackTrace();
             return null;
         }
         catch(IOException ie)

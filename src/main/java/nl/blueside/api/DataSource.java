@@ -10,10 +10,10 @@ import java.util.ArrayList;
 public class DataSource implements Runnable
 {
 
-    private String resource;
-    private String query;
+    protected String resource;
+    protected String query;
     private SPContext context;
-    private List<DashboardSession> dashboardSessions;
+    protected List<DashboardSession> dashboardSessions;
     
     private static final int VALID_SUBSCRIBTION_TIME = 150; // in days
 
@@ -48,9 +48,6 @@ public class DataSource implements Runnable
             responseObj.put("resource", this.resource);
             responseObj.put("query", this.query);
             DBMessage msg = new DBMessage(responseObj.toString(), DBMessageType.UPDATE);
-            System.out.println("\n");
-            System.out.println("Sending:");
-            System.out.println(msg.toString());
 
             for(DashboardSession ds : dashboardSessions)
             {
@@ -80,7 +77,7 @@ public class DataSource implements Runnable
 
         String subscriptionId = null;
         try
-        {   
+        {
             SPPostRequest pr = new SPPostRequest(this.context, this.resource + "/subscriptions", payload.toString());
             JSONObject responseObj = pr.execute();
         }

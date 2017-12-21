@@ -34,9 +34,8 @@ public class DashboardHandler extends TextWebSocketHandler
         DashboardSessions.addSession(ds);
 
         JSONObject returnObject = new JSONObject();
-        returnObject.put("type", "session_created");
+        returnObject.put("type", DBMessageType.SESSION_CREATED);
         returnObject.put("id", ds.getSessionId());
-
         ds.send(returnObject.toString());
     }
         
@@ -46,7 +45,6 @@ public class DashboardHandler extends TextWebSocketHandler
         try
         {
             JSONObject payload = new JSONObject(message.getPayload());
-            System.out.println(payload.toString());
 
             //TODO: This block takes a long time, resulting in large intervals in Websocket responses
             switch(payload.getString("type"))
@@ -54,18 +52,29 @@ public class DashboardHandler extends TextWebSocketHandler
                 case "subscription":
                     String query = payload.getString("query");
                     String resource = payload.getString("resource");
-
+                    String type = payload.getString("sourceType");
                     DashboardSession dashboardSession = DashboardSessions.getSessionById(session.getId());
 
+                                        
                     // Check if datasource already exists
                     DataSource dataSource = DataSources.getDataSourceByQuery(query);
 
-                    if(dataSource == null)
+                    //TODO: Testcode, remove!
+                    if(type.equals("pkmn"))
                     {
-                        dataSource = new DataSource(context, resource, query);
+                        Pokemon pkmn = new Pokemon(context, resource, query);
+                        pkmn.addSession(dashboardSession);
                     }
+                    else
+                    {
 
-                    dataSource.addSession(dashboardSession);
+                        if(dataSource == null)
+                        {
+                            dataSource = new DataSource(context, resource, query);
+                        }
+                        dataSource.addSession(dashboardSession);
+
+                    }
                     break;
             }
         }

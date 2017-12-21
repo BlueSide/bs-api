@@ -49,14 +49,22 @@ public class SPContext
         this.authentication = getAccessTokenFromUserCredentials(credentials);
     }
 
-    public void refreshToken() throws Exception
+    public void refreshToken()
     {
         //Check for a valid context, renew if necessary
         Date now = new Date();
         if(now.after(this.authentication.getExpiresOnDate()))
         {
-            this.authentication = getAccessTokenFromUserCredentials(credentials);
-            SlackMessage sm = new SlackMessage("Refreshed JWT for " + credentials.username);
+            try
+            {
+                this.authentication = getAccessTokenFromUserCredentials(credentials);
+                SlackMessage sm = new SlackMessage("Refreshed JWT for " + credentials.username);   
+            }
+            catch(Exception e)
+            {
+                SlackMessage sm = new SlackMessage("There was an error refreshing the JWT for: " + credentials.username + "\n"
+                                                   + "Error message: " + e.getMessage());
+            }
         }
     }
     
