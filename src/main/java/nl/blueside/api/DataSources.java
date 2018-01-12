@@ -2,6 +2,7 @@ package nl.blueside.api;
 
 import java.util.List;
 import java.util.ArrayList;
+
 public class DataSources 
 {
     private static List<DataSource> dataSources = new ArrayList<DataSource>();
@@ -26,6 +27,19 @@ public class DataSources
         for(DataSource ds : dataSources)
         {
             if(ds.getQuery().equals(query))
+            {
+                return ds;
+            }
+        }
+
+        return null;
+    }
+
+    public static DataSource getDataSourceById(String id)
+    {
+        for(DataSource ds : dataSources)
+        {
+            if(ds.getId().equals(id))
             {
                 return ds;
             }

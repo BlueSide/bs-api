@@ -15,8 +15,16 @@ public class DashboardSessions
 
     public static void removeSession(String sessionId)
     {
+        DashboardSession session = getSessionById(sessionId);
         
-        sessions.remove(getSessionById(sessionId));
+        // Remove session from all datasources
+        for(DataSource ds : DataSources.getDataSources())
+        {
+            ds.removeSession(session);
+        }
+        
+        sessions.remove(session);
+        
     }
 
     public static List<DashboardSession> getSessions()

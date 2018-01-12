@@ -10,8 +10,11 @@ import java.util.ArrayList;
 public class DataSource implements Runnable
 {
 
-    protected String resource;
-    protected String query;
+    public String resource;
+    public String query;
+
+    public String id;
+
     private SPContext context;
     protected List<DashboardSession> dashboardSessions;
     
@@ -33,9 +36,32 @@ public class DataSource implements Runnable
         this.dashboardSessions.add(dashboardSession);
     }
 
+    public void removeSession(DashboardSession dashboardSession)
+    {
+        this.dashboardSessions.remove(dashboardSession);
+    }
+
     public String getQuery()
     {
         return this.query;
+    }
+
+    public String getId()
+    {
+        return this.id;
+    }
+
+    public SPContext getContext()
+    {
+        return this.context;
+    }
+
+    public void broadcast(String message)
+    {
+        for(DashboardSession ds : dashboardSessions)
+        {
+            ds.send(message);
+        }
     }
     
     public void run()
@@ -59,13 +85,8 @@ public class DataSource implements Runnable
             System.err.println(use.getMessage());
             use.printStackTrace();
         }
-        catch(IOException ie)
-        {
-            System.err.println(ie.getMessage());
-            ie.printStackTrace();
-        }        
-
-        //TODO: Figure out when what we can do on an exisiting subscription
+        
+        // TODO: Figure out when what we can do on an exisiting subscription
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime then = now.plusDays(VALID_SUBSCRIBTION_TIME);
 
@@ -73,13 +94,14 @@ public class DataSource implements Runnable
         payload.put("resource", this.resource);
         payload.put("notificationUrl", Settings.webhookEndpoint);
         payload.put("expirationDateTime", then.toString());
-        //payload.put("clientState", getSessionId());
 
-        String subscriptionId = null;
         try
         {
             SPPostRequest pr = new SPPostRequest(this.context, this.resource + "/subscriptions", payload.toString());
             JSONObject responseObj = pr.execute();
+
+            this.id = responseObj.getString("id");
+            
         }
         catch(URISyntaxException use)
         {

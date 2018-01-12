@@ -28,7 +28,7 @@ public class DashboardHandler extends TextWebSocketHandler
         this.context = SPContext.registerCredentials("https://bluesidenl.sharepoint.com",
                                                      "https://bluesidenl.sharepoint.com/sites/dev/dashboard",
                                                      Settings.applicationId,
-                                                     "admin@bluesidenl.onmicrosoft.com", "Zj5B66YDwrmjj3hw");
+                                                     "admin@bluesidenl.onmicrosoft.com", "vY6TacnqKc8wK4hx");
 
         DashboardSession ds = new DashboardSession(session);
         DashboardSessions.addSession(ds);
@@ -58,7 +58,14 @@ public class DashboardHandler extends TextWebSocketHandler
                                         
                     // Check if datasource already exists
                     DataSource dataSource = DataSources.getDataSourceByQuery(query);
-
+                    if(dataSource == null)
+                    {
+                        dataSource = new DataSource(context, resource, query);
+                        DataSources.addDataSource(dataSource);
+                    }
+                    
+                    dataSource.addSession(dashboardSession);
+                    
                     //TODO: Testcode, remove!
                     if(type.equals("pkmn"))
                     {
@@ -92,6 +99,7 @@ public class DashboardHandler extends TextWebSocketHandler
     {
         System.out.println("Dashboard with id " + session.getId() + " disconnected:");
         System.out.println(status.toString());
+
         DashboardSessions.removeSession(session.getId());
     }
 }

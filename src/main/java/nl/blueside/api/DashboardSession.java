@@ -16,9 +16,6 @@ public class DashboardSession
 
     private Thread thread;
     
-    public String query;
-    public String resource;
-    
     private WebSocketSession wsSession;
     private Map<String, String> subscriptions;
     
@@ -28,9 +25,21 @@ public class DashboardSession
         this.wsSession = session;
     }
 
-    public void send(String message) throws IOException
+    public void send(String message)
     {
-        wsSession.sendMessage(new TextMessage(message.getBytes()));
+        try
+        {
+            // TODO: Check why we need this condition. Are we leaking sessions?
+            if(wsSession.isOpen())
+            {
+                this.wsSession.sendMessage(new TextMessage(message.getBytes()));
+            }
+        }
+        catch(IOException ioe)
+        {
+            System.err.println("IOException: " + ioe.getMessage());
+            ioe.printStackTrace();
+        }
     }
 
     public String getSessionId()

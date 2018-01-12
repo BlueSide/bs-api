@@ -47,8 +47,6 @@ public class Dashboard
             return new ResponseEntity<String>(validationToken, HttpStatus.OK);
         }
 
-        System.out.println(payload);
-        
         //NOTE: Strip off first character, somehow it's a "?"
         payload = payload.substring(1);
         JSONObject root = new JSONObject(payload);
@@ -58,31 +56,28 @@ public class Dashboard
         {
 
             JSONObject change = value.getJSONObject(i);
-            System.out.println(change.toString());
             String subscriptionId = change.getString("subscriptionId");
-            
-            for(DataSource ds : DataSources.getDataSources())
+
+            //TODO: Reimplement changes
+            DataSource ds = DataSources.getDataSourceById(subscriptionId);
+            if(ds != null)
             {
-                /*
-                String resource = ds.getSubscription(subscriptionId);
-                if(resource != null)
-                {
-                    try
-                    {   
-                        SPGetRequest gr = new SPGetRequest(ds.getContext(), ds.query);
-                        JSONObject responseObj = gr.execute();
-                        DBMessage msg = new DBMessage(responseObj.toString(), DBMessageType.UPDATE);
-                        ds.send(msg.toString());
-                    }
-                    catch(URISyntaxException use)
-                    {
-                        System.err.println(use.getMessage());
-                        use.printStackTrace();
-                    }
+                
+                try
+                {   
+                    SPGetRequest gr = new SPGetRequest(ds.getContext(), ds.query);
+
+                    DashboardData dd= new DashboardData(gr.execute(), ds.resource, ds.query);
                     
+                    DBMessage msg = new DBMessage(dd.toString(), DBMessageType.UPDATE);
+                    ds.broadcast(msg.toString());
                 }
-                */
-            }            
+                catch(URISyntaxException use)
+                {
+                    System.err.println(use.getMessage());
+                    use.printStackTrace();
+                }
+            }    
         }
         
         return new ResponseEntity<String>(HttpStatus.OK);
