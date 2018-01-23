@@ -9,11 +9,14 @@ import org.springframework.context.annotation.Bean;
 
 @Configuration
 @EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+public class WebSocketConfig implements WebSocketConfigurer
+{
 
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(dashboardHandler(), "/d").setAllowedOrigins("http://localhost:4200");
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry)
+    {
+        registry.addHandler(dashboardHandler(), "/d").setAllowedOrigins(System.getenv("allowedOrigin"), "http://localhost:4200");
+        
     }
 
     @Bean
