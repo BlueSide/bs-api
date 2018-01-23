@@ -15,8 +15,7 @@ public class WebSocketConfig implements WebSocketConfigurer
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry)
     {
-        registry.addHandler(dashboardHandler(), "/d").setAllowedOrigins(System.getenv("allowedOrigin"), "http://localhost:4200");
-        
+        registry.addHandler(dashboardHandler(), "/d").setAllowedOrigins("*");        
     }
 
     @Bean
